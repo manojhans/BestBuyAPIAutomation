@@ -1,0 +1,12 @@
+com/api/pojo/Services.class
+com/api/pojo/ServicesResponse.class
+com/api/client/Errors.class
+com/api/pojo/Products.class
+com/api/pojo/Stores.class
+com/api/client/RestClient.class
+com/api/pojo/Users.class
+com/api/pojo/Categories.class
+com/api/pojo/ProductsResponse.class
+com/api/pojo/CategoriesResponse.class
+com/api/base/TestBase.class
+com/api/pojo/StoresResponse.class
