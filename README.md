@@ -19,5 +19,3 @@ cd bestbuyapiautomation
 ```
 #Testing
 Run ```bash mvn clean install`` and all the tests will be executed and you can get the report under target->surefire-reports folder.
-
-# BestBuyAPIAutomation
