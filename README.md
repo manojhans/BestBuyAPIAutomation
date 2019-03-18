@@ -18,4 +18,4 @@ git clone https://github.com/manojhans/bestbuyapiautomation
 cd bestbuyapiautomation
 ```
 #Testing
-Run ```bash mvn clean install`` and all the tests will be executed and you can get the report under target->surefire-reports folder.
+Run ```bash mvn clean install``` and all the tests will be executed and you can get the report under target->surefire-reports folder.
