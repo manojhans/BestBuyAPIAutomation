@@ -24,7 +24,7 @@ import com.api.base.TestBase;
 import com.api.client.Errors;
 import com.api.client.RestClient;
 import com.api.pojo.Stores;
-import com.api.pojo.StoresResponse;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -60,14 +60,15 @@ public class StoresTest extends TestBase{
 		String state="HR";
 		String zip="122001";
 		Stores Stores = new Stores(name, address, city, state, zip); 
-		mapper.writeValue(new File("./src/test/resources/testfiles/stores.json"), Stores);
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.writeValue(new File("./src/test/resources/testfiles/stores/stores.json"), Stores);
 		String usersJsonString = mapper.writeValueAsString(Stores);
 		httpResponse = restClient.post(url, usersJsonString, headerMap); 
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
 		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_201);
-		
+		mapper.setSerializationInclusion(Include.ALWAYS);
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-		StoresResponse catResObj = mapper.readValue(responseString, StoresResponse.class); 
+		Stores catResObj = mapper.readValue(responseString, Stores.class); 
 		Assert.assertTrue(Stores.getName().equals(catResObj.getName()));
 		Assert.assertTrue(Stores.getCity().equals(catResObj.getCity()));		
 	}	
@@ -105,7 +106,7 @@ public class StoresTest extends TestBase{
 
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		JSONObject responseJson = new JSONObject(responseString);
-		String expectedResponse="./src/test/resources/testfiles/getstoreid.json";
+		String expectedResponse="./src/test/resources/testfiles/stores/getstoreid.json";
 		String content = new String(Files.readAllBytes(Paths.get(expectedResponse)),"UTF-8");
 		JSONObject expectedResponseJson = new JSONObject(content);
 		TypeReference<HashMap<String, Object>> type = new TypeReference<HashMap<String, Object>>() {};

@@ -24,7 +24,7 @@ import com.api.base.TestBase;
 import com.api.client.Errors;
 import com.api.client.RestClient;
 import com.api.pojo.Services;
-import com.api.pojo.ServicesResponse;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -56,14 +56,15 @@ public class ServicesTest extends TestBase{
 	public void verifyCreateServiceWithValidData() throws JsonGenerationException, JsonMappingException, IOException{
 		String name="Mobile";
 		Services services = new Services(name); 
-		mapper.writeValue(new File("./src/test/resources/testfiles/services.json"), services);
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.writeValue(new File("./src/test/resources/testfiles/services/services.json"), services);
 		String usersJsonString = mapper.writeValueAsString(services);
 		httpResponse = restClient.post(url, usersJsonString, headerMap); 
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
 		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_201);
-		
+		mapper.setSerializationInclusion(Include.ALWAYS);
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-		ServicesResponse catResObj = mapper.readValue(responseString, ServicesResponse.class);
+		Services catResObj = mapper.readValue(responseString, Services.class);
 		System.out.println(catResObj);
 		Assert.assertTrue(services.getName().equals(catResObj.getName()));
 	}
@@ -101,7 +102,7 @@ public class ServicesTest extends TestBase{
 
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		JSONObject responseJson = new JSONObject(responseString);
-		String expectedResponse="./src/test/resources/testfiles/getserviceid.json";
+		String expectedResponse="./src/test/resources/testfiles/services/getserviceid.json";
 		String content = new String(Files.readAllBytes(Paths.get(expectedResponse)),"UTF-8");
 		JSONObject expectedResponseJson = new JSONObject(content);
 		TypeReference<HashMap<String, Object>> type = new TypeReference<HashMap<String, Object>>() {};

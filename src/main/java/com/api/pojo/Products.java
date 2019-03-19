@@ -7,6 +7,11 @@ public class Products {
 	private String upc;
 	private String type;
 	private String model;
+	private String id;
+	private String createdAt;
+	private String updatedAt;
+	
+	public Products() {}
 	
 	public Products(String name, String description, String upc, String type, String model) {
 		this.name=name;
@@ -54,5 +59,29 @@ public class Products {
 	
 	public String getModel() {
 		return model;
+	}
+	
+	public void setId(String id) {
+		this.id=id;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setCreatedAt(String createdAt) {
+		this.createdAt=createdAt;
+	}
+	
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt=updatedAt;
+	}
+	
+	public String getUpdatedAt() {
+		return updatedAt;
 	}
 }

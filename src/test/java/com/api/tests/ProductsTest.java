@@ -24,9 +24,10 @@ import com.api.base.TestBase;
 import com.api.client.Errors;
 import com.api.client.RestClient;
 import com.api.pojo.Products;
-import com.api.pojo.ProductsResponse;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.MapDifference;
@@ -60,14 +61,15 @@ public class ProductsTest extends TestBase{
 		String type="Electronics";
 		String model="iPhone";
 		Products products = new Products(name, description, upc, type, model); 
-		mapper.writeValue(new File("./src/test/resources/testfiles/products.json"), products);
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.writeValue(new File("./src/test/resources/testfiles/products/products.json"), products);
 		String usersJsonString = mapper.writeValueAsString(products);
 		httpResponse = restClient.post(url, usersJsonString, headerMap); 
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
 		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_201);
-
+		mapper.setSerializationInclusion(Include.ALWAYS);
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-		ProductsResponse catResObj = mapper.readValue(responseString, ProductsResponse.class); 
+		Products catResObj = mapper.readValue(responseString, Products.class); 
 		Assert.assertTrue(products.getName().equals(catResObj.getName()));		
 		Assert.assertTrue(products.getModel().equals(catResObj.getModel()));	
 	}	
@@ -105,7 +107,7 @@ public class ProductsTest extends TestBase{
 
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		JSONObject responseJson = new JSONObject(responseString);
-		String expectedResponse="./src/test/resources/testfiles/getproductid.json";
+		String expectedResponse="./src/test/resources/testfiles/products/getproductid.json";
 		String content = new String(Files.readAllBytes(Paths.get(expectedResponse)),"UTF-8");
 		JSONObject expectedResponseJson = new JSONObject(content);
 		TypeReference<HashMap<String, Object>> type = new TypeReference<HashMap<String, Object>>() {};

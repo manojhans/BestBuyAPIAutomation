@@ -7,6 +7,11 @@ public class Stores {
 	private String city;
 	private String state;
 	private String zip;
+	private String id;
+	private String createdAt;
+	private String updatedAt;
+	
+	public Stores() {}
 	
 	public Stores(String name, String address, String city, String state, String zip) {
 		this.name=name;
@@ -15,6 +20,7 @@ public class Stores {
 		this.state=state;
 		this.zip=zip;
 	}
+	
 	public void setName(String name) {
 		this.name=name;
 	}
@@ -53,5 +59,29 @@ public class Stores {
 	
 	public String getZip() {
 		return zip;
+	}
+	
+	public void setId(String id) {
+		this.id=id;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setCreatedAt(String createdAt) {
+		this.createdAt=createdAt;
+	}
+	
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt=updatedAt;
+	}
+	
+	public String getUpdatedAt() {
+		return updatedAt;
 	}
 }
