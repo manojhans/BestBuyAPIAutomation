@@ -1,15 +1,14 @@
 package com.api.client;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RestClient {
 

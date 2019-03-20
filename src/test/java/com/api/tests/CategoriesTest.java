@@ -1,7 +1,21 @@
 package com.api.tests;
 
-import static org.junit.Assert.assertTrue;
-
+import com.api.base.TestBase;
+import com.api.client.Errors;
+import com.api.client.RestClient;
+import com.api.pojo.Categories;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,26 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import com.api.base.TestBase;
-import com.api.client.Errors;
-import com.api.client.RestClient;
-import com.api.pojo.Categories;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
+import static org.junit.Assert.assertTrue;
 
 public class CategoriesTest extends TestBase{
 
@@ -41,9 +36,9 @@ public class CategoriesTest extends TestBase{
 	HttpResponse httpResponse;
 	ObjectMapper mapper = new ObjectMapper();
 	HashMap<String, String> headerMap;
-	
+
 	@BeforeMethod
-	public void setUp() throws ClientProtocolException, IOException{
+	public void setUp() {
 		restClient = new RestClient();
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Content-Type", "application/json");
@@ -53,7 +48,7 @@ public class CategoriesTest extends TestBase{
 	}
 	
 	@Test
-	public void verifyCreateCategoryWithValidData() throws JsonGenerationException, JsonMappingException, IOException{	
+	public void verifyCreateCategoryWithValidData() throws IOException{
 		String categoryId="cat"+randomNumber();
 		String name="leader";
 		Categories categories = new Categories(categoryId, name);
@@ -63,7 +58,7 @@ public class CategoriesTest extends TestBase{
 		httpResponse = restClient.post(url, jsonString, headerMap); 
 
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_201);
+		Assert.assertEquals(statusCode, HttpStatus.SC_CREATED);
 		mapper.setSerializationInclusion(Include.ALWAYS);
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		Categories catResObj = mapper.readValue(responseString, Categories.class);		
@@ -72,11 +67,11 @@ public class CategoriesTest extends TestBase{
 	}	
 	 
 	@Test
-	public void verifyCreateCategoryWithBlankData() throws JsonGenerationException, JsonMappingException, IOException{
+	public void verifyCreateCategoryWithBlankData() throws IOException {
 		String blankString = ""; 
 		httpResponse = restClient.post(url, blankString, headerMap); 
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_400);
+		Assert.assertEquals(statusCode, HttpStatus.SC_BAD_REQUEST);
 		
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		JSONObject responseJson = new JSONObject(responseString);
@@ -86,21 +81,21 @@ public class CategoriesTest extends TestBase{
 	}
 	
 	@Test
-	public void verifyGetAllCategoriesByDefault() throws ParseException, IOException {
+	public void verifyGetAllCategoriesByDefault() throws IOException {
 		String defaultCat="10";
 		httpResponse = restClient.get(url);
 		int statusCode = httpResponse.getStatusLine().getStatusCode();	
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_200, "Status code is not 200");
+		Assert.assertEquals(statusCode, HttpStatus.SC_OK, "Status code is not 200");
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		assertTrue(responseString.contains("\"limit\":"+defaultCat));
 	}
 	
 	@Test
-	public void verifyGetCategoryByID() throws ParseException, IOException {
+	public void verifyGetCategoryByID() throws IOException {
 		String catId="abcat0010000";
 		httpResponse = restClient.get(url+File.separator+catId);
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_200, "Status code is not 200");
+		Assert.assertEquals(statusCode, HttpStatus.SC_OK, "Status code is not 200");
 
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		JSONObject responseJson = new JSONObject(responseString);
@@ -115,21 +110,21 @@ public class CategoriesTest extends TestBase{
 	}
 	
 	@Test
-	public void verifyGetCategoryFilterByLimit() throws ParseException, IOException {
+	public void verifyGetCategoryFilterByLimit() throws IOException {
 		String limit="2";
 		httpResponse = restClient.get(url+File.separator+"?$limit="+limit);
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_200, "Status code is not 200");
+		Assert.assertEquals(statusCode, HttpStatus.SC_OK, "Status code is not 200");
 
 		String responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 		assertTrue(responseString.contains("\"limit\":"+limit));
 	}
 	
 	@Test
-	public void verifyGetInvalidCategory() throws ParseException, IOException {
+	public void verifyGetInvalidCategory() throws IOException {
 		String invalidCat="423424543";
 		httpResponse = restClient.get(url+File.separator+invalidCat);
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		Assert.assertEquals(statusCode, RESPONSE_STATUS_CODE_404, "Status code is not 404");
+		Assert.assertEquals(statusCode, HttpStatus.SC_NOT_FOUND, "Status code is not 404");
 	}
 }
