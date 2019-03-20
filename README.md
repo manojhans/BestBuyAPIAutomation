@@ -11,7 +11,7 @@ This project contains the code for Best Buy API Automation.
 * TestNG
 
 # Getting Started
-Make sure you have API Playground started on your local machine and Maven should be present on your machine.
+Make sure you have [API Playground](https://github.com/BestBuy/api-playground) started on your local machine and Maven should be present on your machine.
 
 ```bash
 git clone https://github.com/manojhans/BestBuyAPIAutomation.git
