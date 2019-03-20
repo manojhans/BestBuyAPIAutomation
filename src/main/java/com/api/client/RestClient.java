@@ -13,27 +13,27 @@ import org.apache.http.impl.client.HttpClients;
 
 public class RestClient {
 
-	public HttpResponse get(String url) throws ClientProtocolException, IOException {
+	public HttpResponse get(String url) throws IOException {
 		HttpClient httpClient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse httpResponse = httpClient.execute(httpget);
 		return httpResponse;
 	}
 
-	public HttpResponse get(String url, HashMap<String, String> headerMap) throws ClientProtocolException, IOException {
+	public HttpResponse get(String url, HashMap<String, String> headerMap) throws IOException {
 		HttpClient httpClient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(url);
 
 		for (Map.Entry<String, String> entry : headerMap.entrySet()) {
 			httpget.addHeader(entry.getKey(), entry.getValue());
 		}
-		HttpResponse httpResponse = httpClient.execute(httpget); // hit the GET URL
+		HttpResponse httpResponse = httpClient.execute(httpget);
 		return httpResponse;
 
 	}
 
 	public HttpResponse post(String url, String entityString, HashMap<String, String> headerMap)
-			throws ClientProtocolException, IOException {
+			throws IOException {
 		HttpClient httpClient = HttpClients.createDefault();
 		HttpPost httppost = new HttpPost(url);
 		httppost.setEntity(new StringEntity(entityString));
