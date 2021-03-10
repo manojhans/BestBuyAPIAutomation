@@ -1,1 +1,7 @@
-{"name":"Test1 Store","address":"321 Street 4","city":"Gurugram","state":"HR","zip":"122001"}
+{
+  "name": "Test1 Store",
+  "address": "321 Street 4",
+  "city": "Gurugram",
+  "state": "HR",
+  "zip": "122001"
+}
