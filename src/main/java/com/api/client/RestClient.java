@@ -1,47 +1,41 @@
 package com.api.client;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 public class RestClient {
 
-	public HttpResponse get(String url) throws IOException {
-		HttpClient httpClient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet(url);
-		HttpResponse httpResponse = httpClient.execute(httpget);
-		return httpResponse;
-	}
+    private CloseableHttpClient httpClient;
 
-	public HttpResponse get(String url, HashMap<String, String> headerMap) throws IOException {
-		HttpClient httpClient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet(url);
+    public RestClient() {
+        httpClient = HttpClients.custom().build();
+    }
 
-		for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-			httpget.addHeader(entry.getKey(), entry.getValue());
-		}
-		HttpResponse httpResponse = httpClient.execute(httpget);
-		return httpResponse;
+    public HttpResponse get(String url) throws IOException {
+        HttpUriRequest request = RequestBuilder
+            .get(url)
+            .addHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType())
+            .build();
 
-	}
+        return httpClient.execute(request);
+    }
 
-	public HttpResponse post(String url, String entityString, HashMap<String, String> headerMap)
-			throws IOException {
-		HttpClient httpClient = HttpClients.createDefault();
-		HttpPost httppost = new HttpPost(url);
-		httppost.setEntity(new StringEntity(entityString));
+    public HttpResponse post(String url, String entity) throws IOException {
+        HttpUriRequest request = RequestBuilder
+            .post(url)
+            .setEntity(new StringEntity(entity))
+            .addHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType())
+            .build();
 
-		for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-			httppost.addHeader(entry.getKey(), entry.getValue());
-		}
-
-		HttpResponse httpResponse = httpClient.execute(httppost);
-		return httpResponse;
-	}
+        return httpClient.execute(request);
+    }
 }
